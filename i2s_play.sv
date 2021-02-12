@@ -24,33 +24,33 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 module i2s_play(input logic clk,    // system clock
-				input logic sclk,     
-				input logic reset_n,
-				output logic [4:0] addr,
-				input logic [15:0] word_data,
-				input logic ws,
-				output logic sdo);
+		input logic sclk,   // i2s clock  
+		input logic reset_n,
+		output logic [4:0] addr,
+		input logic [15:0] word_data,
+		input logic ws,    // i2s word select
+		output logic sdo); // i2s serial data out
 				
-	logic [2:0] sync_sclk;
-	logic [2:0] sync_ws;
-	logic [3:0] bitcnt;
-	logic [4:0] wordcnt;
+	 logic [2:0] sync_sclk;
+	 logic [2:0] sync_ws;
+ 	 logic [3:0] bitcnt;
+         logic [4:0] wordcnt;
 	logic [15:0] i2s_out_word;
 	logic sdo_t;
 	
 	always_ff @ (posedge clk or negedge reset_n)
-    begin
-        if (~reset_n)
-            begin
-                sync_sclk <= 3'b000;
-                sync_ws   <= 3'b000;
-            end
-        else
-            begin
-                sync_sclk <= {sync_sclk[1:0], sclk};
-                sync_ws   <= {sync_ws[1:0], ws};
-            end
-    end
+    	begin
+		if (~reset_n)
+		    begin
+			sync_sclk <= 3'b000;
+			sync_ws   <= 3'b000;
+		    end
+		else
+		    begin
+			sync_sclk <= {sync_sclk[1:0], sclk};
+			sync_ws   <= {sync_ws[1:0], ws};
+		    end
+    	end
 	
 	logic sync_sclk_re; 
 	logic sync_sclk_fe;
@@ -59,8 +59,8 @@ module i2s_play(input logic clk,    // system clock
 	logic i2s_word_end;
 	logic i2s_active;
 	
-	assign i2s_word_start = (sync_ws[2:1]==2'b01) ? 1'b1 : 1'b0;         // ws -- active high
-	assign i2s_word_end   = (sync_ws[2:1]==2'b10) ? 1'b1 : 1'b0;       // transaction ends 
+	assign i2s_word_start = (sync_ws[2:1]==2'b01) ? 1'b1 : 1'b0;     // ws -- active high
+	assign i2s_word_end   = (sync_ws[2:1]==2'b10) ? 1'b1 : 1'b0;     // transaction ends 
 	assign i2s_active = sync_ws[1];
 	
 	assign sync_sclk_fe = (sync_sclk[2:1]==2'b10) ? 1'b1 : 1'b0;  	// falling edge
@@ -93,12 +93,12 @@ module i2s_play(input logic clk,    // system clock
 	end
 	assign addr = wordcnt;
 
-assign sdo_t = (i2s_active) ? i2s_out_word[15] : 1'b0;
+	assign sdo_t = (i2s_active) ? i2s_out_word[15] : 1'b0;
 
 	always_ff @(posedge clk, negedge reset_n)
 		if (~reset_n)
 			sdo <= 1'b0;
 		else if (sync_sclk_re)
-			sdo <= sdo_t;
+			sdo <= sdo_t;    // flop sdo so it matches i2s standard of one sclk after ws edge
 		
 endmodule : i2s_play
