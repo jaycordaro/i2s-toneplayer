@@ -99,6 +99,6 @@ module i2s_play(input logic clk,    // system clock
 		if (~reset_n)
 			sdo <= 1'b0;
 		else if (sync_sclk_re)
-			sdo <= sdo_t;    // flop sdo so it matches i2s standard of one sclk after ws edge
+			sdo <= sdo_t;    // flop sdo so it matches i2s standard of sdo out one sclk after ws edge
 		
 endmodule : i2s_play
