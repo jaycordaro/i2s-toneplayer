@@ -1,8 +1,11 @@
 # i2s-toneplayer
-Send 16-bit wide I2S audio out over SDO from a LUT.  Synthesizable SystemVerilog I2S target (slave), interfaces with an I2S controller and provides SDO to controller.  Controller sources WS and SCK.  
+Send 16-bit wide I2S audio out over SDO from a LUT.  Synthesizable SystemVerilog I2S target (slave), interfaces with an I2S controller and provides SDO to controller. 
 
 Uses a 32 entry 16-bit wide ROM look up table (LUT).  Programmed in this iteration to output a 1kHz tone when WS is high with a 16kHz SCK.
 
+Controller sources WS and SCK.  A system clock is required, the output data is synchronized with SCK.
+ 
+ 
 Interface Ports
 -------------
 
@@ -58,7 +61,7 @@ Interface Ports
   </tr>
 </table>
 
-## Verification
+## Verification and Test
 
 Simulation -- testbench checked using ModelSim - INTEL FPGA STARTER EDITION 2020.1
 Revision: 2020.02
