@@ -1,3 +1,6 @@
+/* Jay Cordaro 2021
+ * Toplevel for i2s target on Intel MAX10 device
+ */
 module i2s_top(
 		input INPUT_CLK,
 		input reset_n,
@@ -20,7 +23,7 @@ module i2s_top(
 	i2srom	i2srom_inst (
 		.address 	(addr),	
 		.clock		(clk),
-		.q			(word_data)
+		.q		(word_data)
 	);
 		
 	i2s_play i2s_play_inst(
@@ -29,7 +32,7 @@ module i2s_top(
 		.reset_n 	(reset_n),
 		.addr		(addr),
 		.word_data	(word_data),
-		.ws			(ws),
+		.ws		(ws),
 		.sdo		(sdo)	
 	);
 	
